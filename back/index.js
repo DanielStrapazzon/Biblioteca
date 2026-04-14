@@ -4,6 +4,7 @@ import AlunoController from "./controllers/AlunoController.js";
 import UsuarioController from "./controllers/UsuarioController.js"; 
 import ObraController from "./controllers/ObraController.js";
 import ExemplarController from "./controllers/ExemplarController.js";
+import EmprestimoController from "./controllers/EmprestimoController.js";
 
 //Testando a conexão com o banco de dados
 try {
@@ -45,6 +46,12 @@ api.get('/exemplar/:id', ExemplarController.selecionar);
 api.delete('/exemplar/:id', ExemplarController.excluir);
 api.post('/exemplar', ExemplarController.inserir);
 api.put('/exemplar/:id', ExemplarController.alterar);
+
+api.get('/emprestimo', EmprestimoController.listar);
+api.get('/emprestimo/:id', EmprestimoController.selecionar);
+api.delete('/emprestimo/:id', EmprestimoController.excluir);
+api.post('/emprestimo', EmprestimoController.inserir);
+api.put('/emprestimo/:id', EmprestimoController.alterar);
 
 api.listen(4002, () => { console.log('API Rodando...') });
 
