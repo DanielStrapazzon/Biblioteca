@@ -1,4 +1,4 @@
-Comandos git:
+Comandos para atualizar (Commit) no git:
 
 git status
 git add . (pasta expecífica ou arquivo)
