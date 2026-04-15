@@ -45,13 +45,10 @@ api.get('/exemplar', ExemplarController.listar);
 api.get('/exemplar/:id', ExemplarController.selecionar);
 api.delete('/exemplar/:id', ExemplarController.excluir);
 api.post('/exemplar', ExemplarController.inserir);
-api.put('/exemplar/:id', ExemplarController.alterar);
 
 api.get('/emprestimo', EmprestimoController.listar);
 api.get('/emprestimo/:id', EmprestimoController.selecionar);
-api.delete('/emprestimo/:id', EmprestimoController.excluir);
-api.post('/emprestimo', EmprestimoController.inserir);
-api.put('/emprestimo/:id', EmprestimoController.alterar);
+api.post('/emprestar', EmprestimoController.emprestar);
 
 api.listen(4002, () => { console.log('API Rodando...') });
 

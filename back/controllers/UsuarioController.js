@@ -9,13 +9,13 @@ async function listar (req, res) {
 }
 
 async function selecionar (req, res) {
-  const idusuario = req.params.idusuario;
+  const idusuario = req.params.id;
   const dados = await Usuario.findByPk(idusuario);
   return res.json(dados);
 }
 
 async function excluir (req, res) {
-  const idusuario = req.params.idusuario;
+  const idusuario = req.params.id;
   const dados = await Usuario.destroy({ where: { idusuario: idusuario } });
   return res.json(dados);
 }
@@ -39,7 +39,7 @@ async function inserir (req, res) {
 }
 
 async function alterar(req, res) {
-    const idusuario = req.params.idusuario;
+    const idusuario = req.params.id;
     const nome = req.body.nome;
     const matricula = req.body.matricula;
     const email = req.body.email;

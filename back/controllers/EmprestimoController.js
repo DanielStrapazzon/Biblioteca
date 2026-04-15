@@ -1,4 +1,7 @@
 import Emprestimo from "../models/Emprestimo.js";
+import Exemplar from "../models/Exemplar.js";
+import Usuario from "../models/Usuario.js";
+import moment from "moment/moment.js";
 
 //Regras de Negócios
 // MVC -> Model, View, Controller
@@ -14,13 +17,7 @@ async function selecionar (req, res) {
   return res.json(dados);
 }
 
-async function excluir (req, res) {
-  const idemprestimo = req.params.id;
-  const dados = await Emprestimo.destroy({ where: { idemprestimo: idemprestimo } });
-  return res.json(dados);
-}
-
-async function inserir(req,res) {
+async function emprestar(req,res) {
     try {
         const idexemplar = req.body.idexemplar;
         const idusuario = req.body.idusuario;
@@ -28,13 +25,51 @@ async function inserir(req,res) {
         const vencimento = req.body.vencimento;
         const devolucao = req.body.devolucao;
 
-        await Emprestimo.create({
-            idexemplar,
-            idusuario,
-            emprestimo,
-            vencimento,
-            devolucao
+        // Verificar se o exemplar existe
+
+        const exemplar = await Exemplar.findByPk(idexemplar);
+        if (!exemplar) {
+            return res.status(400).send({ erro: "Exemplar não encontrado" });
+        }
+        
+        // Verificar se o exemplar está disponível para empréstimo
+        if (exemplar.status == 1) {
+            return res.status(400).send({ erro: "Exemplar indisponível para empréstimo" });
+        }
+        
+        // Verificar se o usuário existe
+        const usuario = await Usuario.findByPk(idusuario);  
+        if (!usuario) {
+            return res.status(400).send({ erro: "Usuário não encontrado" });
+        }
+
+        // Verificar se o usuário está ativo
+        if (usuario.status == 0) {
+            return res.status(400).send({ erro: "Usuário inativo" });
+        }
+
+        //Data de emprestimo 
+        const dataEmprestimo = moment().format('YYYY-MM-DD');
+        const dataVencimento = moment().add(7, 'days').format('YYYY-MM-DD');
+
+        if (!dataEmprestimo.isValid()) {
+            return res.status(400).send({ erro: "Data de empréstimo inválida" });
+        }   
+
+        if (!dataVencimento.isValid()) {
+            return res.status(400).send({ erro: "Data de vencimento inválida" });
+        }   
+
+        const dados = await Emprestimo.create({
+            idexemplar: idexemplar,
+            idusuario: idusuario,
+            emprestimo: dataEmprestimo,
+            vencimento: dataVencimento,
+            devolucao: devolucao
         });
+
+        // Atualizar o status do exemplar para indisponível
+        exemplar.update({ status: 1 });
 
         res.json("Empréstimo criado com sucesso.");
 
@@ -43,19 +78,4 @@ async function inserir(req,res) {
     }
 };
 
-async function alterar(req, res) {
-    const idemprestimo = req.params.id;
-    const idexemplar = req.body.idexemplar;
-    const idusuario = req.body.idusuario;
-    const emprestimo = req.body.emprestimo;
-    const vencimento = req.body.vencimento;
-    const devolucao = req.body.devolucao;
-
-    const dados = await Emprestimo.update({ idexemplar: idexemplar, idusuario: idusuario, 
-      emprestimo: emprestimo, vencimento: vencimento, devolucao: devolucao }, { 
-        where: { idemprestimo: idemprestimo }
-    });
-    return res.json(dados);
-}
-
-export default { listar, selecionar, excluir, inserir, alterar };
+export default { listar, selecionar, emprestar };

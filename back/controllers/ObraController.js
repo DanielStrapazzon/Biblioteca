@@ -8,13 +8,13 @@ async function listar (req, res) {
 }
 
 async function selecionar (req, res) {
-  const idobra = req.params.idobra;
+  const idobra = req.params.id;
   const dados = await Obra.findByPk(idobra);
   return res.json(dados);
 }
 
 async function excluir (req, res) {
-  const idobra = req.params.idobra;
+  const idobra = req.params.id;
   const dados = await Obra.destroy({ where: { idobra: idobra } });
   return res.json(dados);
 }
@@ -44,7 +44,7 @@ async function inserir (req, res) {
 }
 
 async function alterar(req, res) {
-    const idobra = req.params.idobra;
+    const idobra = req.params.id;
     const titulo = req.body.titulo;
     const autor = req.body.autor;
     const isbn = req.body.isbn;
